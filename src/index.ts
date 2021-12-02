@@ -2,33 +2,50 @@ export * from './types'
 
 import { createHash } from 'crypto'
 import { Request, RequestHandler } from 'express'
-import * as querystring from 'querystring'
 import * as Types from './types'
 
 const lengthOfHash: Record<Types.HashAlgorithm, number> = {
   md5: 128 / 4,
   sha256: 256 / 4,
 }
+
+type SignatureData = {
+  e?: string
+  a?: string
+  r: string
+  m?: string
+}
 class Signature implements Types.Signature {
-  private secret: string[]
+  private secret: string
   private ttl: number
   private hashAlgo: Types.HashAlgorithm
 
   constructor(options: Types.SignatureOptions) {
-    this.secret = Array.isArray(options.secret)
-      ? options.secret
-      : [options.secret]
+    this.secret = options.secret
     this.ttl = options.ttl || 60
     this.hashAlgo = options.hashAlgo || 'sha256'
   }
 
+  stringify(data: SignatureData): string {
+    return new URLSearchParams(data)
+      .toString()
+      .replace(/=/g, ':')
+      .replace(/&/g, ';')
+  }
+
+  parse(url: string): SignatureData {
+    const params = new URLSearchParams(
+      url.replace(/:/g, '=').replace(/;/g, '&'),
+    )
+    const data = {} as SignatureData
+    for (const k of params.keys()) {
+      data[k] = params.get(k)
+    }
+    return data
+  }
+
   sign(url: string, options: Types.SignMethodOptions = {}): string {
-    const data: {
-      e?: number
-      a?: string
-      r: string
-      m?: string
-    } = {
+    const data: SignatureData = {
       r: Math.floor(Math.random() * 10000000000).toString(),
     }
 
@@ -37,7 +54,7 @@ class Signature implements Types.Signature {
       options.exp ||
       (this.ttl ? Math.ceil(+new Date() / 1000) + this.ttl : null)
     if (exp) {
-      data.e = exp
+      data.e = exp.toString()
     }
     if (options.addr) {
       data.a = options.addr
@@ -54,13 +71,12 @@ class Signature implements Types.Signature {
     url +=
       (url.indexOf('?') == -1 ? '?' : '&') +
       'signed=' +
-      querystring.stringify(data, ';', ':') +
+      this.stringify(data) +
       ';'
 
     const hash = createHash(this.hashAlgo)
     hash.update(url, 'utf8')
     hash.update(this.secret[0])
-
     url += hash.digest('hex')
 
     return url
@@ -100,13 +116,11 @@ class Signature implements Types.Signature {
     if (lastAmpPos == -1) {
       return Types.VerifyResult.blackholed
     }
-    const data = querystring.parse(
+    const data = this.parse(
       url.substring(
         lastAmpPos + 8,
         url.length - lengthOfHash[this.hashAlgo] - 1,
       ),
-      ';',
-      ':',
     )
     req.url = url.substring(0, lastAmpPos)
 
