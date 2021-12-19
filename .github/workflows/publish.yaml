@@ -1,0 +1,25 @@
+name: express-signed-url CI publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - name: npm publish
+        run: |
+          yarn
+          yarn build
+          yarn test
+          yarn config set npmAuthToken $NODE_AUTH_TOKEN
+          yarn npm whoami
+          yarn npm publish
+        env:
+          CI: true
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}

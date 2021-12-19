@@ -1,3 +1,4 @@
+import * as crypto from 'crypto'
 import * as express from 'express'
 import * as http from 'http'
 import * as request from 'request'
@@ -35,6 +36,7 @@ algos.forEach((algo, i) => {
 
     before('should create signature', () => {
       signature = signed({
+        // secret: crypto.randomBytes(20).toString('hex'),
         secret: 'Xd<dMf72sj;6',
         hashAlgo: algo,
       })

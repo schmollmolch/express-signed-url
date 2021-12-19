@@ -1,5 +1,7 @@
 # express-signed-url
 
+![build](https://github.com/schmollmolch/express-signed-url/actions/workflows/build.yaml/badge.svg)
+
 express-signed-url is tiny node.js/express library for signing urls and validating them based on secret key.
 
 It might be used for secure sharing urls for users, without need to check permissions on resources server.
@@ -14,7 +16,7 @@ So, sessions or storing additional data aren't required.
 
 This is a shameless clone of [signed](https://github.com/smbwain/signed) that is extended for sha256 as hash algorithm and works successfully behind a reverse proxy.
 
-# Let's start
+## Let's start
 
 ```bash
 npm install --save express-signed-url
@@ -73,7 +75,7 @@ app.get('/source/:a', signature.verifier(), (req, res, next) => {
 app.listen(8080)
 ```
 
-# API
+## API
 
 Library exports factory which takes _options_ and returns _Signature object_.
 
@@ -101,7 +103,7 @@ const signature = signed({
 })
 ```
 
-## signature.sign
+### signature.sign
 
 This method signs url and returns signed one. You also may pass additional object _options_.
 
@@ -137,7 +139,7 @@ const signedUrl = signature.sign('http://example.com/resource', {
 })
 ```
 
-## signature.verifier
+### signature.verifier
 
 Return express middleware for validate incoming requests.
 
@@ -185,6 +187,6 @@ app.get(
 )
 ```
 
-# License
+## License
 
 MIT
