@@ -1,12 +1,14 @@
-import * as crypto from 'crypto'
-import * as express from 'express'
-import * as http from 'http'
-import * as request from 'request'
-import signed, { HashAlgorithm, Signature } from '../..'
+import express from 'express'
+import http from 'http'
+import request from 'request'
+import signed, { HashAlgorithm, Signature } from '../index.js'
 
 const TEST_PORT = 23001
 
-function makeRequest(path, { expectedCode = 200 } = {}): Promise<string> {
+function makeRequest(
+  path: string,
+  { expectedCode = 200 } = {},
+): Promise<string> {
   return new Promise((resolve, reject) => {
     request(path, (err, response, body) => {
       if (err) {

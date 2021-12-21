@@ -9,5 +9,6 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "javascript.preferences.importModuleSpecifierEnding": "js"
 }

@@ -50,7 +50,7 @@ app.get('/resource', signature.verifier(), (req, res, next) => {
 ## Sample application
 
 ```ts
-import * as express from 'express'
+import express from 'express'
 import signed from 'express-signed-url'
 
 // Create signature
@@ -61,14 +61,14 @@ const signature = signed({
 const app = express()
 
 // Index with signed link
-app.get('/', (req, res, next) => {
+app.get('/', (req, res) => {
   const s = signature.sign('http://localhost:8080/source/a')
   res.send('<a href="' + s + '">' + s + '</a><br/>')
   // It prints something like http://localhost:8080/source/a?signed=r:1422553972;e8d071f5ae64338e3d3ac8ff0bcc583b
 })
 
 // Validating
-app.get('/source/:a', signature.verifier(), (req, res, next) => {
+app.get('/source/:a', signature.verifier(), (req, res) => {
   res.send(req.params.a)
 })
 
@@ -181,7 +181,7 @@ app.get(
     // by default, following method will be used
     addressReader: (req) => req.connection.remoteAddress,
   }),
-  (req, res, next) => {
+  (req, res) => {
     res.send('hello')
   },
 )

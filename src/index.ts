@@ -1,26 +1,24 @@
-export * from './types'
-
+export * from './types.js'
+import { URLSearchParams } from 'url'
 import { createHash } from 'crypto'
 import { Request, RequestHandler } from 'express'
-import * as Types from './types'
+import { HashAlgorithm, SignatureOptions, SignMethodOptions } from './index.js'
+import { AddressReader, VerifierMethodOptions, VerifyResult } from './types.js'
 
-const lengthOfHash: Record<Types.HashAlgorithm, number> = {
+const lengthOfHash: Record<HashAlgorithm, number> = {
   md5: 128 / 4,
   sha256: 256 / 4,
 }
 
-type SignatureData = {
-  e?: string
-  a?: string
-  r: string
-  m?: string
-}
-class Signature implements Types.Signature {
+const signatureDataKeys = ['e', 'a', 'r', 'm'] as const
+type SignatureData = Partial<Record<typeof signatureDataKeys[number], string>>
+
+class Signature implements Signature {
   private secret: string
   private ttl: number
-  private hashAlgo: Types.HashAlgorithm
+  private hashAlgo: HashAlgorithm
 
-  constructor(options: Types.SignatureOptions) {
+  constructor(options: SignatureOptions) {
     this.secret = options.secret
     this.ttl = options.ttl || 60
     this.hashAlgo = options.hashAlgo || 'sha256'
@@ -38,13 +36,13 @@ class Signature implements Types.Signature {
       url.replace(/:/g, '=').replace(/;/g, '&'),
     )
     const data = {} as SignatureData
-    for (const k of params.keys()) {
-      data[k] = params.get(k)
+    for (const k of signatureDataKeys) {
+      data[k] = params.get(k) ?? undefined
     }
     return data
   }
 
-  sign(url: string, options: Types.SignMethodOptions = {}): string {
+  sign(url: string, options: SignMethodOptions = {}): string {
     const data: SignatureData = {
       r: Math.floor(Math.random() * 10000000000).toString(),
     }
@@ -92,10 +90,7 @@ class Signature implements Types.Signature {
     return false
   }
 
-  verifyUrl(
-    req: Request,
-    addressReader?: Types.AddressReader,
-  ): Types.VerifyResult {
+  verifyUrl(req: Request, addressReader?: AddressReader): VerifyResult {
     const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`
 
     if (
@@ -105,7 +100,7 @@ class Signature implements Types.Signature {
         url.substr(-1 * lengthOfHash[this.hashAlgo]),
       )
     ) {
-      return Types.VerifyResult.blackholed
+      return VerifyResult.blackholed
     }
 
     // get signed data
@@ -114,7 +109,7 @@ class Signature implements Types.Signature {
       lastAmpPos = url.lastIndexOf('?signed=')
     }
     if (lastAmpPos == -1) {
-      return Types.VerifyResult.blackholed
+      return VerifyResult.blackholed
     }
     const data = this.parse(
       url.substring(
@@ -126,15 +121,15 @@ class Signature implements Types.Signature {
 
     // check additional conditions
     if (data.a && addressReader && data.a != addressReader(req)) {
-      return Types.VerifyResult.blackholed
+      return VerifyResult.blackholed
     }
     if (data.m && data.m.indexOf(req.method) == -1) {
-      return Types.VerifyResult.blackholed
+      return VerifyResult.blackholed
     }
     if (data.e && parseInt(data.e as string) < Math.ceil(+new Date() / 1000)) {
-      return Types.VerifyResult.expired
+      return VerifyResult.expired
     }
-    return Types.VerifyResult.ok
+    return VerifyResult.ok
   }
 
   verifier({
@@ -149,21 +144,21 @@ class Signature implements Types.Signature {
       next(err)
     },
     addressReader = (req) => req.ip,
-  }: Types.VerifierMethodOptions = {}): RequestHandler {
+  }: VerifierMethodOptions = {}): RequestHandler {
     return (req, res, next) => {
       switch (this.verifyUrl(req, addressReader)) {
-        case Types.VerifyResult.ok:
+        case VerifyResult.ok:
           next()
           break
-        case Types.VerifyResult.blackholed:
+        case VerifyResult.blackholed:
           return blackholed(req, res, next)
-        case Types.VerifyResult.expired:
+        case VerifyResult.expired:
           return expired(req, res, next)
       }
     }
   }
 }
 
-export default function (options: Types.SignatureOptions) {
+export default function (options: SignatureOptions) {
   return new Signature(options)
 }
