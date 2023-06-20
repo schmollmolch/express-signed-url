@@ -11,7 +11,7 @@ const lengthOfHash: Record<HashAlgorithm, number> = {
 }
 
 const signatureDataKeys = ['e', 'a', 'r', 'm'] as const
-type SignatureData = Partial<Record<typeof signatureDataKeys[number], string>>
+type SignatureData = Partial<Record<(typeof signatureDataKeys)[number], string>>
 
 class Signature implements Signature {
   private secret: string
@@ -74,7 +74,7 @@ class Signature implements Signature {
 
     const hash = createHash(this.hashAlgo)
     hash.update(url, 'utf8')
-    hash.update(this.secret[0])
+    hash.update(this.secret[0] || '')
     url += hash.digest('hex')
 
     return url
@@ -84,7 +84,7 @@ class Signature implements Signature {
     for (let i = 0; i < this.secret.length; i++) {
       const hash = createHash(this.hashAlgo)
       hash.update(str, 'utf8')
-      hash.update(this.secret[i], 'utf8')
+      hash.update(this.secret[i] || '', 'utf8')
       if (hash.digest('hex') == sign) return true
     }
     return false
@@ -133,12 +133,12 @@ class Signature implements Signature {
   }
 
   verifier({
-    blackholed = (req, res, next) => {
+    blackholed = (_req, _res, next) => {
       const err = new Error('Blackholed')
       ;(err as any).status = 403
       next(err)
     },
-    expired = (req, res, next) => {
+    expired = (_req, _res, next) => {
       const err = new Error('Expired')
       ;(err as any).status = 410
       next(err)

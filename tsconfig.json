@@ -1,22 +1,35 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "module": "es2020",
-    "target": "es2016",
-    "strict": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
-    "strictPropertyInitialization": true,
-    "noImplicitThis": true,
-    "noImplicitAny": true,
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "outDir": "dist",
+    "allowSyntheticDefaultImports": true, // To provide backwards compatibility, Node.js allows you to import most CommonJS packages with a default import. This flag tells TypeScript that it's okay to use import on CommonJS modules.
     "baseUrl": "./src",
-    "lib": ["es2016"],
+    "declaration": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react",
+    "lib": ["DOM", "DOM.Iterable", "ES2021"],
+    // Disabled because of https://github.com/Microsoft/TypeScript/issues/29172
+    // "outDir": "dist",
+    "module": "node16",
+    "moduleDetection": "force",
+    "moduleResolution": "node16",
+    "newLine": "lf",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "dist",
     "paths": {
       "include": ["src/*"]
-    }
+    },
+    "pretty": true,
+    "resolveJsonModule": false, // ESM doesn't yet support JSON modules.
+    "skipLibCheck": true,
+    "strict": true,
+    "stripInternal": true,
+    "target": "ES2021", // Node.js 16
+    "useDefineForClassFields": true
   }
 }

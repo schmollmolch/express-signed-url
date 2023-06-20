@@ -1,6 +1,6 @@
 import express from 'express'
 import http from 'http'
-import request from 'request'
+import got from 'got'
 import signed, { HashAlgorithm, Signature } from '../index.js'
 
 const TEST_PORT = 23001
@@ -9,20 +9,10 @@ function makeRequest(
   path: string,
   { expectedCode = 200 } = {},
 ): Promise<string> {
-  return new Promise((resolve, reject) => {
-    request(path, (err, response, body) => {
-      if (err) {
-        reject(err)
-        return
-      }
-      if (response.statusCode != expectedCode) {
-        err = new Error(`Wrong status code: ${response.statusCode}`)
-        err.statusCode = response.statusCode
-        reject(err)
-        return
-      }
-      resolve(body)
-    })
+  return got.get(path, { resolveBodyOnly: true }).catch((error) => {
+    if (error.response.statusCode === expectedCode) {
+      return error.response.body
+    } else throw error
   })
 }
 
@@ -52,7 +42,7 @@ algos.forEach((algo, i) => {
         res.send('ok')
       })
 
-      app.get('/try', signature.verifier(), function (req, res) {
+      app.get('/try', signature.verifier(), function (_req, res) {
         res.send('ok')
       })
 
@@ -60,7 +50,7 @@ algos.forEach((algo, i) => {
       v1.get('/try', signature.verifier(), (_, res) => res.send('ok'))
       app.use('/v1', v1)
 
-      await new Promise<void>((resolve, reject) => {
+      await new Promise<void>((resolve) => {
         server = app.listen(port, () => {
           resolve()
         })
