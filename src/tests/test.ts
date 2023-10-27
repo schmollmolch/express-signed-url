@@ -19,7 +19,7 @@ function makeRequest(
 const algos: HashAlgorithm[] = ['sha256', 'md5']
 algos.forEach((algo, i) => {
   const port = TEST_PORT + i
-  let localIp: string = 'not-yet-set'
+  let localIp: string | undefined
 
   describe(`test ${algo} hash`, function () {
     this.timeout(10000)

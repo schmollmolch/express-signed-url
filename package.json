@@ -1,7 +1,7 @@
 {
   "name": "express-signed-url",
-  "version": "3.1.0",
-  "packageManager": "yarn@3.6.0",
+  "version": "3.1.1",
+  "packageManager": "yarn@4.0.0",
   "description": "Tiny express library for signing urls and validating them based on secret key",
   "keywords": [
     "express",
@@ -44,20 +44,20 @@
     "express": "4.18.2"
   },
   "devDependencies": {
-    "@types/express": "4.17.17",
-    "@types/mocha": "10.0.1",
-    "@types/node": "18.16.18",
-    "@types/request": "^2.48.8",
-    "eslint": "^8.43.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-prettier": "^4.2.1",
+    "@types/express": "4.17.20",
+    "@types/mocha": "10.0.3",
+    "@types/node": "20.8.9",
+    "@types/request": "^2.48.11",
+    "eslint": "^8.52.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
     "express": "4.18.2",
     "got": "^13.0.0",
     "husky": "^8.0.3",
-    "lint-staged": "^13.2.2",
+    "lint-staged": "^15.0.2",
     "mocha": "10.2.0",
-    "prettier": "^2.8.8",
-    "typescript": "5.1.3"
+    "prettier": "^3.0.3",
+    "typescript": "5.2.2"
   },
   "husky": {
     "hooks": {

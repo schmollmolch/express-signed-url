@@ -15,7 +15,7 @@ export type SignMethodOptions = {
   addr?: string
 }
 
-export type AddressReader = (req: Request) => string
+export type AddressReader = (req: Request) => string | undefined
 
 export type VerifierMethodOptions = {
   blackholed?: RequestHandler
