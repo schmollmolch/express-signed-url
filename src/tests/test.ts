@@ -1,19 +1,21 @@
 import express from 'express'
 import http from 'http'
-import got from 'got'
+import got, { HTTPError } from 'got'
 import signed, { HashAlgorithm, Signature } from '../index.js'
 
 const TEST_PORT = 23001
 
-function makeRequest(
+async function makeRequest(
   path: string,
   { expectedCode = 200 } = {},
 ): Promise<string> {
-  return got.get(path, { resolveBodyOnly: true }).catch((error) => {
-    if (error.response.statusCode === expectedCode) {
+  try {
+    return await got.get(path, { resolveBodyOnly: true })
+  } catch (error) {
+    if (error instanceof HTTPError && error.response.statusCode === expectedCode) {
       return error.response.body
     } else throw error
-  })
+  }
 }
 
 const algos: HashAlgorithm[] = ['sha256', 'md5']

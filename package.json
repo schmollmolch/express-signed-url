@@ -1,7 +1,7 @@
 {
   "name": "express-signed-url",
   "version": "3.1.1",
-  "packageManager": "yarn@4.0.0",
+  "packageManager": "yarn@4.5.0",
   "description": "Tiny express library for signing urls and validating them based on secret key",
   "keywords": [
     "express",
@@ -12,7 +12,7 @@
   ],
   "type": "module",
   "engines": {
-    "node": ">=16"
+    "node": ">=20"
   },
   "exports": "./dist/index.js",
   "types": "./src/index.ts",
@@ -44,20 +44,20 @@
     "express": "4.18.2"
   },
   "devDependencies": {
-    "@types/express": "4.17.20",
-    "@types/mocha": "10.0.3",
-    "@types/node": "20.8.9",
-    "@types/request": "^2.48.11",
-    "eslint": "^8.52.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.1",
-    "express": "4.18.2",
-    "got": "^13.0.0",
-    "husky": "^8.0.3",
-    "lint-staged": "^15.0.2",
-    "mocha": "10.2.0",
-    "prettier": "^3.0.3",
-    "typescript": "5.2.2"
+    "@types/express": "4.17.21",
+    "@types/mocha": "10.0.8",
+    "@types/node": "22.5.5",
+    "@types/request": "^2.48.12",
+    "eslint": "^9.10.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "express": "4.21.0",
+    "got": "^14.4.2",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "mocha": "10.7.3",
+    "prettier": "^3.3.3",
+    "typescript": "5.6.2"
   },
   "husky": {
     "hooks": {
