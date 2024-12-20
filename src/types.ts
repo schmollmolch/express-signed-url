@@ -36,7 +36,7 @@ export interface Signature {
   sign(url: string, options?: SignMethodOptions): string
 
   /**
-   * Check whether string sign is valid
+   * Check whether string signature is valid
    */
   verifyString(str: string, sign: string): boolean
 

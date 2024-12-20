@@ -49,7 +49,7 @@ algos.forEach((algo, i) => {
       })
 
       const v1 = express.Router()
-      v1.get('/try', signature.verifier(), (_, res) => res.send('ok'))
+      v1.get('/try', signature.verifier(), (_, res) => {res.send('ok')})
       app.use('/v1', v1)
 
       await new Promise<void>((resolve) => {

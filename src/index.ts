@@ -1,7 +1,7 @@
 export * from './types.js'
-import { URLSearchParams } from 'url'
 import { createHash } from 'crypto'
 import { Request, RequestHandler } from 'express'
+import { URLSearchParams } from 'url'
 import { HashAlgorithm, SignatureOptions, SignMethodOptions } from './index.js'
 import { AddressReader, VerifierMethodOptions, VerifyResult } from './types.js'
 
