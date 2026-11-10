@@ -148,8 +148,7 @@ class Signature implements Signature {
     return (req, res, next) => {
       switch (this.verifyUrl(req, addressReader)) {
         case VerifyResult.ok:
-          next()
-          break
+          return next()
         case VerifyResult.blackholed:
           return blackholed(req, res, next)
         case VerifyResult.expired:
